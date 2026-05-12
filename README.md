@@ -512,3 +512,61 @@ plt.axis('off')
 plt.tight_layout()
 plt.show()
 ```
+11th:
+```
+# WAP in python to compress the image using DCT ....Implementation of Image Compression by DCT(discrete cosine transform).
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+img = cv2.imread(r"cat.jpg")
+image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# convert to float
+image = np.float32(image)
+
+# apply dct
+dct = cv2.dct(image)
+
+# create Mask (keep low Frequency)
+h, w = dct.shape
+mask = np.zeros((h, w), dtype=np.float32)
+
+keep_ratio = 0.5  # change this for compression level
+
+for i in range(int(h * keep_ratio)):
+    for j in range(int(w * keep_ratio)):
+        mask[i, j] = 1
+
+# apply mask
+dct_compressed = dct * mask
+
+# apply inverse dct
+reconstructed = cv2.idct(dct_compressed)
+
+# convert to uint8
+reconstructed = np.uint8(np.clip(reconstructed, 0, 255))
+
+print("DCT compression Applied")
+print("keep ratio:", keep_ratio)
+
+plt.figure(figsize=(10, 10))
+
+
+plt.subplot(1, 2, 1)
+plt.imshow(image, cmap="gray")
+plt.axis("off")
+plt.title("Original Image")
+
+plt.subplot(1, 2, 2)
+plt.imshow(reconstructed, cmap="gray")
+plt.axis("off")
+plt.title("Reconstructed Image")
+
+plt.show()
+# cv2.imshow("original Image", np.uint8(image))
+# cv2.imshow("Reconstructed Image", reconstructed)
+
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+```
